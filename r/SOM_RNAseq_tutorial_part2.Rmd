@@ -1,0 +1,175 @@
+Self Organizing Maps and PCA
+========================================================
+
+The goal of this analysis is to find genes that have co-expression patterns of 
+
+1. most differentiated genes between tissue. 
+
+## 1.pca.R
+
+First read in file that came from mostSigDEgenes.Rmd.  This is a list of genes from all DE analysis in WT. They were all cancatenated, then duplicate genes were removed.  In addition the mean was calculated from the replicates of each type. 
+
+The first step is to get it into the right format. First column being the genes, while the subsequent columns are the different libraries (type).
+
+```{r}
+mostDEgenes <- read.csv("../data/allGeneList.csv")
+head(mostDEgenes)
+
+mostDEgenes <- mostDEgenes[c(7, 1, 4)] #keep only needed columns (gene, type, mean)
+
+#Change from long to wide data format
+mostDEgene.long <- cast(mostDEgenes, gene ~ type, value.var = mean, fun.aggregate = "mean")  #why did I have to specify "mean" here? Are there duplicates of types? Double check later. 
+
+mostDEgene.long <- as.data.frame(mostDEgene.long) #transformation. 
+names(mostDEgene.long)
+
+
+scale_data <- as.matrix(t(scale(t(mostDEgene.long[c(2:7)]))))
+
+#Principle Component Analysis
+pca <- prcomp(scale_data, scale=TRUE) 
+
+summary(pca) 
+
+pca.scores <- data.frame(pca$x)
+
+data.val <- cbind(mostDEgene.long, scale_data, pca.scores) 
+head(data.val)
+```
+
+
+##Visualizing the PCA
+
+Looks to be three major clusters. 
+
+```{r}
+p <- ggplot(data.val, aes(PC1, PC2)) 
+p + geom_point()
+```
+
+#1. Self Organizing Map - (6,6) Large
+
+The size of the map is something that may cause differences in the genes that are clustered.  Using a small map size (3,2), I found they cluster in according to tissue type. This makes the interpretation of the results pretty straight forward. My only worry is that the map might not be large enough, considering [1], suggests that you size of the map based on count distribution, the goal being an even distribution, with no "peak" counts in any one cluster while also having no empty clusters.  
+
+The only way to see how this is affects what we see is to compare the clusters of the small (3,2) and large map (6,6).  
+
+```{r}
+names(data.val)
+
+som.data <- as.matrix(data.val[,c(8:13)])  #subset only the scaled gene expression values
+
+set.seed(2)
+
+som <- som(data=som.data, somgrid(6,6,"hexagonal")) # This is where you change the size of the map
+summary(som)
+```
+
+###Training Plot ("changes") - Large
+
+This shows a hundred iterations. Training decreases with iterations and plateaus at around 40 iterations.  Ideally you want the the training to reach a minimum plateau.  In the example online, the decrease to this plateau happens slowly with a slow decline to the minimum plateau.  I should look into what this sudden drop means. 
+
+```{r}
+plot(som, type ="changes")
+```
+
+###Code Plot - Large
+
+The the code plot shows each cluster and the node wieght vectors or "codes" associated with each node. These are made up of the original normalized values of the original values used to generate the map.  You should see patterns of clustering.
+
+The fan chart in the center of the clusters reveals the characteristics that define how the genes were clustered into each particular cluster.  For instance if one cluster has only one large fan piece, say for Bother, this is telling us that most of the genes in this cluster were grouped because of similar normalized gene count value of the Bother region. We do not know the degree, it could mean all these genes are up-regulated or down-regulated in the Bother region, but we do not know which at this point. 
+
+```{r}
+plot(som, type = "codes")
+```
+
+###Count Plot - Large
+
+This tells you how many genes are in each of the clusters. The count plot can be used as a quality check.  Ideally you want a uniform distribution.  If there are some peaks in certain areas, this means you should likely increase the map size.  If you have empty nodes you should decrease the map size [1]. 
+
+```{r}
+plot(som, type = "counts")
+```
+
+###Distance Neighbour Plot - Large
+
+This is sometimes called the "U-Matrix", it can help identify further clustering. Areas of low neighbour distance indicate groups of nodes that are similar and the further apart nodes indicate natural "borders" in the map. 
+
+```{r}
+plot(som, type="dist.neighbours")
+```
+
+###Heatmaps - large
+
+This shows the distribution of each type 
+
+```{r}
+head(som$codes)
+som$data <- data.frame(som$data) #changed to dataframe to extract column names easier. 
+
+#This is just a loop that plots the distribution of each tissue type across the map. 
+for (i in 1:6){
+  plot(som, type = "property", property = som$codes[,i], main=names(som$data)[i])
+  print(plot)
+  }
+```
+
+###Clustering Plot - Large
+
+This groups clusters based on similar "metrics".  The advice given from [1], suggests that the heatmap should be used to view the overall "story" of the map. Essentiatlly you are taking all the tissue types into account and viewing it all on one heat map. 
+
+```{r}
+#"estimate of the number of clusters that would be suitable can be ascertained using a kmeans algorithm and examing for an “elbow-point” in the plot of “within cluster sum of squares[1]”
+
+#What the hell is going on here?
+
+mydata <- som$codes
+head(mydata)
+
+wss <- (nrow(mydata)-1)*sum(apply(mydata,2,var)) 
+
+for (i in 1:8) {
+  wss[i] <- sum(kmeans(mydata, centers=i)$withinss)
+}
+
+plot(wss)
+```
+
+This is setting the larger clusters that incorporates multiple clusters. 
+
+```{r}
+
+## use hierarchical clustering to cluster the codebook vectors
+som_cluster <- cutree(hclust(dist(som$codes)), 5)
+# plot these results:
+plot(som, type="mapping", bgcol = som_cluster, main = "Clusters") 
+add.cluster.boundaries(som, som_cluster) 
+
+# I want to attach the hierchal cluster to the larger dataset data.val.
+som_clusterKey <- data.frame(som_cluster)
+som_clusterKey$unit.classif <- c(1:36)
+
+data.val <- cbind(data.val,som$unit.classif,som$distances)
+
+#Merge data.val with som_clusterKey
+##change data.val to match som_cluster key 
+names(data.val)[20] <- "unit.classif"
+
+data.val <- merge(data.val, som_clusterKey, by.x = "unit.classif" ) #ignore warning, this is what you want.  You are essentially filling in the empties with the value from som_clusterKey
+
+write.table(data.val, file="../data/analysis1.som.data.txt")
+#Make sure that there is just one of each value som$unit.classif and distances column. 
+names(data.val)
+```
+
+#Other Visualization - Large
+
+###Visualize by Cluster
+
+```{r}
+plot.data <- read.table("../data/analysis1.som.data.txt",header=TRUE)
+names(plot.data)
+dim(plot.data)
+
+p <- ggplot(plot.data, aes(PC1, PC2, colour=factor(som_cluster))) #notice I am using som_cluster and not unit.classif, because this is the larger SOM
+p + geom_point() + theme_bw()
+```
