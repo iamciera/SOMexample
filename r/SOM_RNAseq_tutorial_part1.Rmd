@@ -8,14 +8,11 @@ In order to remove differences due to the magnitude of gene expression and focus
 ## Required Libraries
 
 ```{r}
-library(ggplot2)
 library(reshape)
-library(RColorBrewer)
 ```
 
 
-Read in files and format data from raw files
-=============================================
+## Read in files and format data from raw files
 
 To start, please set your working directory to the location of this source file. 
 
