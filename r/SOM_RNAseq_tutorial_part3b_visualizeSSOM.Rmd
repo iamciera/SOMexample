@@ -1,0 +1,50 @@
+---
+output: pdf_document
+---
+
+# Self Organizing Maps (SOM): Example using RNAseq reads
+## Part 3a: Visualizing superSOMs
+
+Getting the SOMs is easy, the hard part is interpreting. You can approach these types of analyses in many ways, but below if how I approached understanding my work. I wrote a bunch of functions, that likely only work with my data, but you can go into `sSOM_functions.R` to see how these functions are made to modify for your data.
+
+## Required Libraries and source code
+
+```{r}
+library(VennDiagram)
+library(ggplot2)
+library(reshape)
+library(kohonen)
+library(goseq)
+library(GO.db)
+library(knitr)
+
+source("sSOM_functions.R")
+```
+
+
+## Read in data from previous analysis. 
+
+```{r}
+plot.data <- read.table("../data/ssom.data.txt",header=TRUE)
+names(plot.data)
+head(plot.data)
+```
+
+
+## Visualization
+
+You can examine each cluster with these functions, just change the number in the function.
+
+```{r}
+clusterVis(1)
+clusterVis_PCA(1)
+clusterVis_PCAsub(1)
+clusterVis_line(1)
+y <- genesInClust(1, plot.data, annotation)
+kable(y, format = "latex", booktabs = TRUE)
+clusterGO(1)
+```
+
+
+
+

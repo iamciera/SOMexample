@@ -1,0 +1,103 @@
+##1.pca.R
+
+This data set was generated similarly as in `SOM_RNAseq_tutorial_part1_clean` except I included both genotypes. 
+
+```{r}
+mostDEgenes <- read.csv("../data/allGeneListBothGenotypes.csv")
+
+#keep only needed columns (gene, genotype, type, mean)
+mostDEgenes <- mostDEgenes[c(7, 2, 1, 4)] 
+
+#Change from long to wide data format
+mostDEgene.long <- cast(mostDEgenes, genotype + gene ~ type, value.var = mean, fun.aggregate = "mean")  
+
+# to keep attributes associated
+mostDEgene.long <- as.data.frame(mostDEgene.long)
+```
+
+## PCA
+
+```{r}
+mostDEgene.long <- as.data.frame(mostDEgene.long) 
+names(mostDEgene.long)
+
+scale_data <- as.matrix(t(scale(t(mostDEgene.long[c(3:8)]))))
+head(scale_data) 
+
+#Principle Component Analysis
+pca <- prcomp(scale_data, scale=TRUE) 
+
+summary(pca) 
+
+pca.scores <- data.frame(pca$x)
+
+data.val <- cbind(mostDEgene.long, scale_data, pca.scores) 
+```
+
+
+### Visualizing the PCA
+
+Looks to be three major clusters. 
+
+```{r}
+p <- ggplot(data.val, aes(PC1, PC2)) 
+p + geom_point()
+```
+
+## SuperSOM
+
+First we need to get the data scaled and in the correct format. In this example each genoype was scaled seperatly then brought back together in a list. Each gene will be represented twice.  
+
+```{r}
+tf2 <- as.matrix(subset(mostDEgene.long, genotype == "tf2", select = 3:8))
+wt <- as.matrix(subset(mostDEgene.long, genotype == "wt", select = 3:8))
+
+wt <- as.matrix(wt)
+tf2 <- as.matrix(tf2)
+
+sc.wt <- t(scale(t(wt)))
+sc.tf2 <- t(scale(t(tf2)))
+
+all.data <- list(sc.wt,sc.tf2)
+str(all.data)
+```
+
+Super SOM
+```{r}
+set.seed(2)
+ssom <- supersom(all.data, somgrid(6, 6, "hexagonal"),weights=c(0.5,0.5)) 
+
+summary(ssom)
+```
+
+Notice the number of layers are now two.  You could have more genotypes or different types of layers, like treatment. All depends on the experiment.
+
+Let's look at the super SOM results. Now when you run the plots, you will get two plots
+```{r}
+plot(ssom, type ="changes")
+plot(ssom, type = "codes")
+plot(ssom, type = "counts")
+plot(ssom, type = "quality")
+
+data.val <- cbind(data.val,ssom$unit.classif,ssom$distances)
+
+head(data.val)
+# Output for visualization
+ write.table(data.val, file="../data/ssom.data.txt")
+```
+
+### Visualization 
+
+```{r}
+# plot.data <- read.table("../data/ssom.data.analysis5d.txt",header=TRUE)
+plot.data <- data.val 
+names(plot.data)
+dim(plot.data)
+
+# ggplot does not like dolla signs, yo
+
+colnames(plot.data)[21] <- "ssom.unit.classif"
+colnames(plot.data)[22] <- "ssom.unit.distances"
+```
+
+
