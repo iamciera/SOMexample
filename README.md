@@ -1,8 +1,6 @@
-# SOMexample: 
+# Self Organizing Maps (SOM): Example using RNAseq reads
 
-Self Organizing Maps (SOM): Example using RNAseq reads
---------------
-Self Organizing Maps (SOM): Example using RNAseq reads
+Written by: Ciera Martinez
 
 Tutorial is for learning about how to run clustering analysis using Self Organizing Maps using the kohonen package in R.
 
@@ -17,11 +15,11 @@ Tutorial is for learning about how to run clustering analysis using Self Organiz
 Running Code
 -------------
 
-To run examples, please download all files and keep files in the same folders they were downloaded in from the [Github Repository page](https://github.com/iamciera/SOMexample).
+To run examples, please download all files from [Github Repository page](https://github.com/iamciera/SOMexample) and keep files in the same folders they were downloaded in. Open .Rmd files in Rstudio and set working directory to directory in which code was opened in `.r`. (Session > Set Working Directory > To Source File Location)
 
-New to Githb?: There is a green button that says "clone or download", there is a "download" zip file option here.
+**New to Github?**: There is a green button that says "clone or download", there is a "download" zip file option here.
 
-Directory Structure
+Directory Structure of Repository
 ---------------------
 
 data: Data need to run tutorials. Including output, input, and required data for further analysis after running SOMs.
