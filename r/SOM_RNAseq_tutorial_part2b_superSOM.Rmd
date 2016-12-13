@@ -1,7 +1,20 @@
-##1.pca.R
+---
+output: pdf_document
+---
+# Self Organizing Maps (SOM): Example using RNAseq reads
+## Part 2b: Super Self Organizing Maps
 
-This data set was generated similarly as in `SOM_RNAseq_tutorial_part1_clean` except I included both genotypes. 
+Super self organizing maps allows you to add another level to your analysis. For example in this project, I ran my RNAseq analysis on two different genotypes, *tf-2* and wild type. Instead of clustering each gene one cluster, it forces the same gene from each genotype into the same cluster.  Therefore, each gene is represented twice in this superSOM analysis (one for each genotype).  
 
+## Required Libraries
+```{r}
+library(ggplot2)
+library(reshape)
+library(kohonen)
+library(RColorBrewer)
+```
+
+Read in data and clean up.
 ```{r}
 mostDEgenes <- read.csv("../data/allGeneListBothGenotypes.csv")
 
@@ -72,7 +85,8 @@ summary(ssom)
 
 Notice the number of layers are now two.  You could have more genotypes or different types of layers, like treatment. All depends on the experiment.
 
-Let's look at the super SOM results. Now when you run the plots, you will get two plots
+Let's look at the super SOM results. Now when you run the plots, you will get two plots.
+
 ```{r}
 plot(ssom, type ="changes")
 plot(ssom, type = "codes")
@@ -86,18 +100,5 @@ head(data.val)
  write.table(data.val, file="../data/ssom.data.txt")
 ```
 
-### Visualization 
-
-```{r}
-# plot.data <- read.table("../data/ssom.data.analysis5d.txt",header=TRUE)
-plot.data <- data.val 
-names(plot.data)
-dim(plot.data)
-
-# ggplot does not like dolla signs, yo
-
-colnames(plot.data)[21] <- "ssom.unit.classif"
-colnames(plot.data)[22] <- "ssom.unit.distances"
-```
 
 

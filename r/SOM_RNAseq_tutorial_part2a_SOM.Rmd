@@ -24,7 +24,7 @@ First read in file that came from part 1 `allGeneList.csv`.  This is a list of g
 The first step is to get the data into the right format. First column being the genes, while the subsequent columns are the different libraries (type).
 
 ```{r}
-mostDEgenes <- read.csv("../data/allGeneList_WTonly.csv.csv")
+mostDEgenes <- read.csv("../data/allGeneList_WTonly.csv")
 head(mostDEgenes)
 
 mostDEgenes <- mostDEgenes[c(7, 1, 4)] #keep only needed columns (gene, type, mean)
