@@ -1,6 +1,8 @@
 # Self Organizing Maps (SOM): Example using RNAseq reads
 
-Written by: Ciera Martinez
+*Written by: Ciera Martinez*
+
+![alt text][html/example.png]
 
 Tutorial is for learning about how to run clustering analysis using Self Organizing Maps using the kohonen package in R.
 
