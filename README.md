@@ -1,4 +1,5 @@
 <div style="text-align:center"><img src ="https://github.com/iamciera/SOMexample/blob/gh-pages/html/example.jpg?raw=true" width="25%" height="25%"/></div>
+
 # Self Organizing Maps (SOM): Example using RNAseq reads
 
 *Written by: Ciera Martinez*
