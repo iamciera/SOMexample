@@ -2,7 +2,7 @@
 
 *Written by: Ciera Martinez*
 
-![alt text][html/example.jpg]
+![alt text][https://github.com/iamciera/SOMexample/blob/gh-pages/html/example.jpg?raw=true]
 
 Tutorial is for learning about how to run clustering analysis using Self Organizing Maps using the kohonen package in R.
 
