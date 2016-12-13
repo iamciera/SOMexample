@@ -6,13 +6,13 @@ Self Organizing Maps (SOM): Example using RNAseq reads
 
 Tutorial is for learning about how to run clustering analysis using Self Organizing Maps using the kohonen package in R.
 
-[part 1](./html/SOM_RNAseq_tutorial_part1_clean.html): Cleaning EdgeR output for SOM analysis.
+[part 1](html/SOM_RNAseq_tutorial_part1_clean.html): Cleaning EdgeR output for SOM analysis.
 
-[part 2a](./html/SOM_RNAseq_tutorial_part2a_SOM.html): Running PCA and SOM
+[part 2a](html/SOM_RNAseq_tutorial_part2a_SOM.html): Running PCA and SOM
 
-[part 2b](./html/SOM_RNAseq_tutorial_part2a_SOM.html): Running superSOM 
+[part 2b](html/SOM_RNAseq_tutorial_part2a_SOM.html): Running superSOM 
 
-[part 3b](./html/SOM_RNAseq_tutorial_part3b_visualizeSSOM): Further visualization to understand results
+[part 3b](html/SOM_RNAseq_tutorial_part3b_visualizeSSOM.html): Further visualization to understand results
 
 Running Code
 -------------
