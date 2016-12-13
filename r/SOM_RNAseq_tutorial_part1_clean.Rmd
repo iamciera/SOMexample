@@ -1,5 +1,5 @@
 ---
-output: pdf_document
+output: html_document
 ---
 # Self Organizing Maps (SOM): Example using RNAseq reads
 ## Part 1: Formatting data for SOM 
