@@ -1,5 +1,5 @@
 ---
-output: pdf_document
+output: html_document
 ---
 # Self Organizing Maps (SOM): Example using RNAseq reads
 ## Part 2: Running PCA and SOM
@@ -10,7 +10,7 @@ When running SOM, it is sometimes helpful to first run PCA to see the general sp
 
 ## Required Libraries
 
-```{r}
+```{r, results="hide", warning=FALSE, message=FALSE}
 library(ggplot2)
 library(reshape)
 library(kohonen)

@@ -1,5 +1,5 @@
 ---
-output: pdf_document
+output: html_document
 ---
 
 # Self Organizing Maps (SOM): Example using RNAseq reads
@@ -9,7 +9,7 @@ Getting the SOMs is easy, the hard part is interpreting. You can approach these 
 
 ## Required Libraries and source code
 
-```{r}
+```{r, results="hide", warning=FALSE, message=FALSE}
 library(ggplot2)
 library(reshape)
 library(goseq)
