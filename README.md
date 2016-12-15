@@ -10,7 +10,7 @@ Tutorial is for learning about how to run clustering analysis using Self Organiz
 
 [part 2a](html/SOM_RNAseq_tutorial_part2a_SOM.html): Running PCA and SOM
 
-[part 2b](html/SOM_RNAseq_tutorial_part2b_SOM.html): Running superSOM 
+[part 2b](html/SOM_RNAseq_tutorial_part2b_superSOM.html): Running superSOM 
 
 [part 3b](html/SOM_RNAseq_tutorial_part3b_visualizeSSOM.html): Further visualization to understand results
 

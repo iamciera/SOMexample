@@ -12,7 +12,7 @@ When running SOM, it is sometimes helpful to first run PCA to see the general sp
 
 ```{r, results="hide", warning=FALSE, message=FALSE}
 library(ggplot2)
-library(reshape)
+library(reshape2)
 library(kohonen)
 library(RColorBrewer)
 ```
@@ -44,7 +44,6 @@ pca <- prcomp(scale_data, scale=TRUE)
 summary(pca) 
 
 pca.scores <- data.frame(pca$x)
-
 ```
 
 I put all the information from each analysis back together throughout the process. Makes visualiztion easier down the line. 
@@ -60,7 +59,7 @@ head(data.val)
 By eye you can see my data is clustered into three major clusters.
 
 ```{r}
-p <- ggplot(data.val, aes(PC1, PC2)) 
+p <- ggplot(data.val, aes(PC2, PC3)) 
 p + geom_point()
 ```
 
@@ -76,6 +75,7 @@ Clustering is performed using the  `som()` function on the scaled gene expressio
 ```{r}
 # Check where the scaled gene expression values are.
 names(data.val)
+head(data.val)
 
 #Subset for SOM in a matrix.  
 #som() only works on matrices NOT dataframes
@@ -89,6 +89,7 @@ set.seed(2)
 #This is where you change the size of the map
 som <- som(data=som.data, somgrid(6,6,"hexagonal")) 
 
+str(som)
 summary(som)
 ```
 
